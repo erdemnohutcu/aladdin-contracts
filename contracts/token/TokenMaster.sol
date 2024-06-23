@@ -207,10 +207,11 @@ contract TokenMaster is Ownable, ReentrancyGuard {
         uint pid = tokenToPid[_token];
         PoolInfo storage pool = poolInfo[pid - 1];
         UserInfo storage user = userInfo[pid][msg.sender];
+        uint256 amountToTransfer = user.amount; // take current user amount
         user.amount = 0;
         user.rewardDebt = 0;
-        IERC20(pool.token).safeTransfer(address(msg.sender), user.amount);
-        emit EmergencyWithdraw(msg.sender, _token, user.amount);
+        IERC20(pool.token).safeTransfer(address(msg.sender), amountToTransfer); // Transfer current user amount 
+        emit EmergencyWithdraw(msg.sender, _token, amountToTransfer);
     }
 
     // Safe ald transfer function, just in case if rounding error causes pool to not have enough ALDs.
